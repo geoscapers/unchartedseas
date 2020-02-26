@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## Create build directory if not present
+mkdir -p build
+
 ## Run python build script
 python build.py
 
