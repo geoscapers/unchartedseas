@@ -12,9 +12,9 @@ Build instructions for building on a linux system:
 ### Install required tools
 The build script uses python, but it should be installed on most systems.
 
-    sudo apt install node-uglify
     sudo apt install npm
-    sudo npm install -g --save glsl-minifier
+    sudo npm install -g glsl-minifier
+    sudo npm install -g uglify-js
 
 ### Build it
     ./build.sh

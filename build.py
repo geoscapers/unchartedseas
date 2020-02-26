@@ -18,27 +18,27 @@ def createShaderSource(name, script):
   return 'var ' + name + '=`' + script + '`\n' # javascript strings can't be multiline by default, use ` strings.
 
 def minifyGlSl(fileName):
-  os.system("glsl-minifier -i ./"+fileName+" -o ./"+fileName+".min");  
+  os.system("glsl-minifier -i ./"+fileName+" -o ./"+fileName+".min")
 
 def minifyJavascript(fileName):
-  os.system("uglifyjs --compress --mangle --verbose --output '" + fileName + ".min.js' " + fileName + ".js");
+  os.system("uglifyjs --compress --mangle --verbose --output '" + fileName + ".min.js' " + fileName + ".js")
   
 
 # TODO: Run glsl through minimizer
-minifyGlSl("vertexShader.vert");
-minifyGlSl("demo.frag");
+minifyGlSl("vertexShader.vert")
+minifyGlSl("demo.frag")
 
 # Run javascript through minimizer
-minifyJavascript("main");
+minifyJavascript("main")
 
 # Load input files
-minimify = "" # ".min"
+minimify = ".min"
 mainJs = readFile("main"+minimify+".js") 
 demoFrag = readFile("demo.frag"+minimify) 
 vertexShader = readFile("vertexShader.vert"+minimify) 
 
 # Header
-indexHtml = "<html><body><canvas/>"
+indexHtml = "<html><body><canvas></canvas>"
 
 # Add shaders as javascript variables
 script = createShaderSource("vert", vertexShader) + createShaderSource("frag", demoFrag) +  mainJs
