@@ -36,9 +36,9 @@ minifyGlSl("demo.frag")
 minifyJavaScript("main.js")
 
 # Load input files
-minimixedFilePrefix = "" # For debugging
 mainJs = readFile(minimixedFilePrefix + "main.js") 
-demoFrag = readFile(minimixedFilePrefix +  "demo.frag") 
+demoFrag = readFile(minimixedFilePrefix +  "demo.frag")  # Fix manually?
+#demoFrag = readFile("demo.frag") 
 vertexShader = readFile(minimixedFilePrefix + "vertexShader.vert") 
 
 # Header

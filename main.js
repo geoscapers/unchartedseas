@@ -99,7 +99,9 @@ function shader(type, src) {
   gl.compileShader(sid);
 
   // For debugging:
+  /*
   if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
+  */
   
   gl.attachShader(pid, sid);
 }

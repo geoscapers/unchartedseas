@@ -1,5 +1,3 @@
-#version 100
-
 attribute vec4 p;
 
 void main(void) {
