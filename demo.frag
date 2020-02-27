@@ -2,8 +2,8 @@
 
 precision mediump float;
 
-uniform float t;
-uniform vec2 r;
+uniform float t; // Time
+uniform vec2 r; // Resolution
 
 float time = t;
 vec2 resolution = r;

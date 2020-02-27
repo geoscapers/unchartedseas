@@ -153,6 +153,7 @@ def shortenIdentifiers(text):
         ids.append(tokens[j])
         #print("adding", tokens[j])
 
+  # Come up with shortened names for each name and replace it
   shortenedIds = []
   nextId = 0
   shorteningMap = {}
