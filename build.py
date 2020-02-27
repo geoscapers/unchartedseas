@@ -4,38 +4,42 @@ import os
 
 outputFileName = "./build/index.html"
 
-# Utility
+minimixedFilePrefix = "./temp/minimized_"
+
+### Utility functions
+
+# Reads text file to string
 def readFile(name):
   f = open(name, "r")
   s = f.read()
   f.close()
   return s
 
-def createScript(scriptType, script):
-  return "<script type='" + scriptType + "'>\n" + script + "\n</script>"
-
+# Create javascript variable with shader source
 def createShaderSource(name, script):
   return 'var ' + name + '=`' + script + '`\n' # javascript strings can't be multiline by default, use ` strings.
 
 def minifyGlSl(fileName):
-  os.system("glsl-minifier -i ./"+fileName+" -o ./"+fileName+".min")
+  os.system("glsl-minifier --shaderVersion 2  -i ./"+fileName+" -o " + minimixedFilePrefix + fileName)
 
-def minifyJavascript(fileName):
-  os.system("uglifyjs --compress --mangle --verbose --output '" + fileName + ".min.js' " + fileName + ".js")
+def minifyJavaScript(fileName):
+  os.system("uglifyjs --compress --mangle --verbose --output '" + minimixedFilePrefix + fileName + "' " + fileName)
   
 
-# TODO: Run glsl through minimizer
+### Main build script
+
+# Run glsl through minimizer
 minifyGlSl("vertexShader.vert")
 minifyGlSl("demo.frag")
 
 # Run javascript through minimizer
-minifyJavascript("main")
+minifyJavaScript("main.js")
 
 # Load input files
-minimify = ".min"
-mainJs = readFile("main"+minimify+".js") 
-demoFrag = readFile("demo.frag"+minimify) 
-vertexShader = readFile("vertexShader.vert"+minimify) 
+minimixedFilePrefix = "" # For debugging
+mainJs = readFile(minimixedFilePrefix + "main.js") 
+demoFrag = readFile(minimixedFilePrefix +  "demo.frag") 
+vertexShader = readFile(minimixedFilePrefix + "vertexShader.vert") 
 
 # Header
 indexHtml = "<html><body><canvas></canvas>"
@@ -44,7 +48,7 @@ indexHtml = "<html><body><canvas></canvas>"
 script = createShaderSource("vert", vertexShader) + createShaderSource("frag", demoFrag) +  mainJs
 
 # Add javascript
-indexHtml = indexHtml + createScript("text/javascript", script)
+indexHtml = indexHtml + "<script>" + script + "</script>"
 
 # Footer
 indexHtml = indexHtml + "</body></html>"
@@ -54,6 +58,6 @@ out = open(outputFileName, "w")
 out.write(indexHtml)
 out.close()
 
-# TODO: Run index.html through minimizer
+# TODO: Run index.html through PNG minimizer or similar for added compression
 
 
