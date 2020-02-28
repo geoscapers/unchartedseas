@@ -8,12 +8,12 @@ uniform vec2 r; // Resolution
 #define TAU 6.28318
 
 // Fade over time. start time: seconds when fade starts, changeTime: seconds that fade takes, startValue: value before fade, endValue: value after fade.
-float fade(float startTime, float changeTime, float startValue, float endValue) {
+float fade(float startTime, float changeTime, float startValue, float endValue, float smoothing) {
   if (t <= startTime) return startValue;
   else if (t >= startTime + changeTime) return endValue;
   else  {
     float t = (t -startTime) / changeTime; // Linear
-    t = .5 - cos(t*TAU/2.)/2.; // Smooth
+    t = mix(t, .5 - cos(t*TAU/2.)/2., smoothing); // Smooth
     return mix(startValue, endValue, t); // Interpolate
   }
 }
@@ -35,10 +35,12 @@ float arm(vec2 pixel, vec2 krakenPos, float direction, float len, float waviness
   return (mod(abs(mod(a+TAU/4., TAU) - mod(direction, TAU)), TAU) - (len - l)*baseSize) / 5.;
 }
 
+
 vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
   float krakenSize = 0.2 + cos(t*1.7)*0.02;
   float body = distance(krakenPos, pixel) - krakenSize;
 	
+  // Tentacles
   float arms = 8.0;  
   float dist = body;	
   for (int i = 1; i < 9; i++) {
@@ -71,7 +73,17 @@ vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
   return vec4(color, dist);
 }
 
+vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
+  float boat = distance(pixel, pos) - 0.3;
+  
+  vec2 delta = pixel - krakenPos;
+  float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
+
+  vec3 boatColor = vec3(.7, .5, 0.2) * surface(boat, .4);
+
+  return vec4(boatColor, boat);
+}
 
 void main( void ) {
   // Project position to approximately 0..1 range
@@ -97,14 +109,26 @@ void main( void ) {
 	  float wavestokes = ((1.0-1.0/16.0*pow((k*waveSize),2.0))*cos(pos.x*waveshort+t1+wavephase) + 0.5*k*waveSize*cos(2.0*waveshort*pos.x+t1+wavephase));
 	  //wave amplitude+wavewobble+waveshift
 	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5);	 
-	  
+
+	  // Kraken
 	  if (j > 4) {
-      vec4 kr = kraken(pos, c, vec2(0.0, fade(3., 3., -1., -0.25)));
+      vec4 kr = kraken(pos, c, vec2(0.0, fade(25., 6., -1., -0.25, 1. + sin(t*3.)*0.03)));
 		  if (kr.a < 0.0) {
 			  c = kr.rgb;
         break;
 		  }      
 	  }
+
+    // Boat
+	  if (j > 3) {
+      vec4 boat = boat(pos, vec2(fade(10., 10., -2., 0.1, 0.5), -0.15), 0., 1.);
+		  if (boat.a < 0.0) {
+			  c = boat.rgb;
+        break;
+		  }      
+	  }
+
+    // Wave
 	  if (pos.y < wave) {
       c = mix(vec3(0.0,0.1,0.2), vec3(0.6, 0.6+i/60., 0.9), 0.05*i);
 	    c *= surface(pos.y - wave, i/8.);  
