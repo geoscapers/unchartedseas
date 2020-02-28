@@ -23,7 +23,7 @@ def writeFile(name, content)  :
 
 
 ### GLSL compressor
-types = ['int', 'float', 'vec2', 'vec3', 'vec4', 'ivec2', 'ivec3', 'ivec4', 'boolean']
+types = ['int', 'float', 'vec2', 'vec3', 'vec4', 'ivec2', 'ivec3', 'ivec4', 'boolean', '#define']
 reservedWords = ['main', 'uniform', 'if', 'for', 'void']
 def stripComments(text):
     return re.sub('//.*?(\r\n?|\n)|/\*.*?\*/', '', text, flags=re.S)
