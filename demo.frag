@@ -106,7 +106,7 @@ void main( void ) {
   // Project position to approximately 0..1 range
   vec2 pos = (gl_FragCoord.xy * 2.0 - r)/max(r.x, r.y);
   float wave = 0.0;
-  float waveOut = min(1.0,max(0.0, (t-3.0)/8.0));
+  float waveOut = fade(9.,8.,0.,1.,1.);
 
   // Sky color by default
   vec3 c = mix(vec3(.7, 0.9,0.8), vec3(.4, .6,.9), pos.y+0.5);
@@ -115,17 +115,17 @@ void main( void ) {
   for (int j = 1; j <= 15; j+=1) {	
     float i = float(j);
 	  float x = (sin(i*i*2.1019)+1.0)/2.0;
-	  float wavephase = x*TAU;
+	  float wavephase = waveOut*x*TAU;
 	  //float wavephase = 0.0;
-	  float t1 = t*(6.-i*.1);	
+	  float t1 = (t-5.)*(6.-i*.1);	
 	  float waveSize = 0.025;
-	  float waveAmp = max(0.0,waveSize - i*0.0016);
+	  float waveAmp = max(0.0,waveSize - waveOut*i*0.0016);
 	
 	  float k = TAU/waveSize;
-	  float waveshort = 5.0+i;	
+	  float waveshort = 5.0+i*waveOut;	
 	  float wavestokes = ((1.0-1.0/16.0*pow((k*waveSize),2.0))*cos(pos.x*waveshort+t1+wavephase) + 0.5*k*waveSize*cos(2.0*waveshort*pos.x+t1+wavephase));
-	  //wave amplitude+wavewobble+waveshift
-	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5);	 
+	  //wave amplitude+wavewobble+waveshift-move+startshift+fade in
+	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5)+0.40*(1.-waveOut)+fade(2.,4.,0.4,0.,0.5);	 
 
 	  // Kraken
 	  if (j > 4) {
