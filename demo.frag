@@ -7,6 +7,17 @@ uniform vec2 r; // Resolution
 
 #define TAU 6.28318
 
+// Fade over time. start time: seconds when fade starts, changeTime: seconds that fade takes, startValue: value before fade, endValue: value after fade.
+float fade(float startTime, float changeTime, float startValue, float endValue) {
+  if (t <= startTime) return startValue;
+  else if (t >= startTime + changeTime) return endValue;
+  else  {
+    float t = (t -startTime) / changeTime; // Linear
+    t = .5 - cos(t*TAU/2.)/2.; // Smooth
+    return mix(startValue, endValue, t); // Interpolate
+  }
+}
+
 float surface(float d, float s) {
     return 1. + 0.05 * sin(d*400.*(1.+s));
 }
@@ -90,7 +101,7 @@ void main( void ) {
 	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+(i*(0.06-i*0.0009)-0.5);	 
 	  
 	  if (j > 4) {
-      vec4 kr = kraken(pos, c, vec2(0.0, -0.2));
+      vec4 kr = kraken(pos, c, vec2(0.0, fade(3., 3., -1., -0.25)));
 		  if (kr.a < 0.0) {
 			  c = kr.rgb;
         break;
