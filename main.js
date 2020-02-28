@@ -18,6 +18,28 @@ cs.cursor = "none";
 //canvas.width = 1366; //1920;
 //canvas.height = 768; //1080;
 
+/*
+function mix(x, y, a) {
+  return x + (y - x) * a;
+}
+*/
+
+/*
+function fade(st, ct, sv, ev, sm) {
+  if (t <= st) return sv;
+  else if (t >= st + ct) return ev;
+  else {
+    tm = (t -st) / ct; // Linear
+    tm = mix(tm, 5 - Math.cos(tm*TAU/2)/2, sm); // Smooth
+    return mix(sv, ev, tm); // Interpolate
+  }
+}
+*/
+
+// Returns value that is x when time is less than t1, y when time is over t1 + d, and linear interpolation in between
+function mp(t1, d, x, y) {
+  return x + (y - x) * (t < t1 ? 0 : t > t1 + d ? 1 : (t - t1) / d);
+}
 
 
 // Setup openGL
@@ -48,6 +70,7 @@ var resLoc = gl.getUniformLocation(pid, 'r');  // Resolution
 var ac = new (window.AudioContext || window.webkitAudioContext);
 
 // Brown noise
+var scr = 0;
 var bs = 4096;
 var vol = 0;
 var lastOut = 0.0;
@@ -59,6 +82,8 @@ bn.onaudioprocess = function(e) {
       o[i] = (lastOut + (0.02 * white)) / 1.02;
       lastOut = o[i];
       o[i] *= 3.5 * vol; // (roughly) compensate for gain, apply volume
+//      o[i] = o[i] * (1-scr) + Math.sin(t*1220) * scr;
+      //o[i] = Math.sin(t*20) * 0.6;
   }
 }
 
@@ -85,8 +110,7 @@ function draw() {
   vol= 0.2 + wave(2.7)*0.15 + wave(7.3, 2)*0.3; // Waves
   vol *= Math.min(t/9, 1); // Fade in
 
-  // Fight sound 
-  if (t > 10) vol *= Math.cos(t*19)/6+1;
+  scr = mp(5, 4, 0, 0.5);
 
   // Sound fade out TODO
 

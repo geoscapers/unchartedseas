@@ -144,7 +144,7 @@ void main( void ) {
 
 	  // Kraken
 	  if (j > 4) {
-      vec4 kr = kraken(pos, c, vec2(0.0, fade(25., 6., -1., -0.25, 1.)));
+      vec4 kr = kraken(pos, vec2(0.0, fade(25., 6., -1., -0.25, 1.)), 1.);
 		  if (kr.a < 0.0) {
 			  c = kr.rgb;
         break;
