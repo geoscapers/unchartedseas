@@ -60,14 +60,13 @@ vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
   return vec4(color, dist);
 }
 
-float rand(vec2 co){
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
+
 
 void main( void ) {
   // Project position to approximately 0..1 range
   vec2 pos = (gl_FragCoord.xy * 2.0 - r)/max(r.x, r.y);
   float wave = 0.0;
+  float waveOut = min(1.0,max(0.0, (t-3.0)/8.0));
 
   // Sky color by default
   vec3 c = mix(vec3(.7, 0.9,0.8), vec3(.4, .6,.9), pos.y+0.5);
@@ -75,8 +74,8 @@ void main( void ) {
 	
   for (int j = 1; j <= 15; j+=1) {	
     float i = float(j);
-	  float x = rand(vec2(i, i+1.0));
-	  float wavephase = x*13.3*TAU+i;
+	  float x = (sin(i*i*2.1019)+1.0)/2.0;
+	  float wavephase = x*TAU;
 	  //float wavephase = 0.0;
 	  float t1 = t*(6.-i*.1);	
 	  float waveSize = 0.025;
@@ -86,7 +85,7 @@ void main( void ) {
 	  float waveshort = 5.0+i;	
 	  float wavestokes = ((1.0-1.0/16.0*pow((k*waveSize),2.0))*cos(pos.x*waveshort+t1+wavephase) + 0.5*k*waveSize*cos(2.0*waveshort*pos.x+t1+wavephase));
 	  //wave amplitude+wavewobble+waveshift
-	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+min(1.0,max(0.0, (t-3.0)/10.0))*(i*(0.06-i*0.0009)-0.5);	 
+	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5);	 
 	  
 	  if (j > 4) {
       vec4 kr = kraken(pos, c, vec2(0.0, -0.2));
