@@ -85,6 +85,11 @@ function draw() {
   vol= 0.2 + wave(2.7)*0.15 + wave(7.3, 2)*0.3; // Waves
   vol *= Math.min(t/9, 1); // Fade in
 
+  // Fight sound 
+  if (t > 10) vol *= Math.cos(t*19)/6+1;
+
+  // Sound fade out TODO
+
   // Have another frame later
   requestAnimationFrame(draw);
 }

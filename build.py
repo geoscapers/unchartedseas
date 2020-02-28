@@ -75,7 +75,7 @@ def startsWithLetterOrNumber(s):
   c = s[0]
   return len(s) > 0 and ( c.isalpha() or c.isdigit() or c in ['(', '.'] )
 
-charsToStripWhitespaceAround = "+-*/()\{\}=<>;"
+charsToStripWhitespaceAround = "+-*/()\{\}=<>;?:"
 whitespace = " \n\t\r"
 def endsWithOp(s):
   return len(s) > 0 and s[-1] in charsToStripWhitespaceAround
@@ -138,7 +138,7 @@ def buildShortId(num):
 
 def shortenIdentifiers(text):
   out = ''
-  tokens = re.split('(;|,|\n|\t| |-|\+|\*|/|=|\(|\)|\.|\{|\}|<|>)', text)
+  tokens = re.split('(;|,|\n|\t| |-|\+|\*|/|=|\(|\)|\.|\{|\}|<|>|\?|\:)', text)
   #print("Tokens: ", tokens)
 
   # Find variable and function names
@@ -146,7 +146,7 @@ def shortenIdentifiers(text):
   for i in range(len(tokens)):
     if tokens[i] in types:
       j = i + 1
-      while j < len(tokens) and not isIdentifier(tokens[j]) and not tokens[j] in ['(', '.']:
+      while j < len(tokens) and not isIdentifier(tokens[j]) and not tokens[j] in ['(', '.', '?']:
         j += 1
       
       if j < len(tokens) and isIdentifier(tokens[j]) and (j < 4 or not tokens[j - 4] == 'uniform'):

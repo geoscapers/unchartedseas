@@ -38,8 +38,8 @@ float arm(vec2 pixel, vec2 krakenPos, float direction, float len, float waviness
 }
 
 
-vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
-  float krakenSize = 0.2 + cos(t*1.7)*0.02;
+vec4 kraken(vec2 pixel, vec2 krakenPos, float size) {
+  float krakenSize = size * (0.2 + cos(t*1.7)*0.02);
   float body = distance(krakenPos, pixel) - krakenSize;
 	
   // Tentacles
@@ -50,7 +50,9 @@ vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
   }
 
   // Colorize kraken areas
+  vec3 color = vec3(0.);
   if (dist < 0.0) {
+    // Krakencolor
     color = vec3(0.1 + dist*2., 0.4 - dist*0.5, 0.3 + dist)  * surface(dist, .5);
 
     // Mouth
@@ -76,22 +78,31 @@ vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
 }
 
 /*
-float cappedCone(vec3 p, float h, float r1, float r2)
-{
-  vec2 q = vec2( length(p.xz), p.y );
+float cappedCone(vec2 p, float h, float r1, float r2) {
+  
   vec2 k1 = vec2(r2,h);
+  
   vec2 k2 = vec2(r2-r1,2.0*h);
-  vec2 ca = vec2(q.x-min(q.x,(q.y<0.0)?r1:r2), abs(q.y)-h);
+  
+  vec2 ca = vec2(p.x-min(p.x,(p.y<0.0) ? r1 : r2 ), abs(p.y)-h);
+  
   vec2 cb = q - k1 + k2*clamp( dot(k1-q,k2)/dot2(k2), 0.0, 1.0 );
+  
   float s = (cb.x<0.0 && ca.y<0.0) ? -1.0 : 1.0;
+  
   return s*sqrt( min(dot2(ca),dot2(cb)) );
 }
 */
 
+float cappedTri(vec2 pixel, vec2 center, float height, float baseLen, float tipLen) {
+  
+  return 0.;
+}
+
 
 vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
-  float boat = distance(pixel, pos) - 0.3;
+  float boat = distance(pixel, pos) - size * 0.3;
   
   vec2 delta = pixel - pos;
   float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
