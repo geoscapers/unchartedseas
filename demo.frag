@@ -79,15 +79,14 @@ void main( void ) {
 	  float wavephase = x*13.3*TAU+i;
 	  //float wavephase = 0.0;
 	  float t1 = t*(6.-i*.1);	
-	  float wavetime = 0.0;
 	  float waveSize = 0.025;
 	  float waveAmp = max(0.0,waveSize - i*0.0016);
 	
 	  float k = TAU/waveSize;
 	  float waveshort = 5.0+i;	
 	  float wavestokes = ((1.0-1.0/16.0*pow((k*waveSize),2.0))*cos(pos.x*waveshort+t1+wavephase) + 0.5*k*waveSize*cos(2.0*waveshort*pos.x+t1+wavephase));
-	  
-	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+(i*(0.06-i*0.0009)-0.5);	 
+	  //wave amplitude+wavewobble+waveshift
+	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+min(1.0,max(0.0, (t-3.0)/10.0))*(i*(0.06-i*0.0009)-0.5);	 
 	  
 	  if (j > 4) {
       vec4 kr = kraken(pos, c, vec2(0.0, -0.2));
