@@ -104,11 +104,13 @@ vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
   return vec4(boatColor, boat);
 }
 
+
 void main( void ) {
   // Project position to approximately 0..1 range
   vec2 pos = (gl_FragCoord.xy * 2.0 - r)/max(r.x, r.y);
   float wave = 0.0;
   float waveOut = fade(9.,8.,0.,1.,1.);
+
 
   // Sky color by default
   vec3 c = mix(vec3(.7, 0.9,0.8), vec3(.4, .6,.9), pos.y+0.5);
@@ -139,8 +141,10 @@ void main( void ) {
 	  }
 
     // Boat
-	  if (j > 3) {
-      vec4 boat = boat(pos, vec2(fade(10., 10., -2., 0.1, 0.5), -0.15), 0., 1.);
+    float boatJump = fade(20.,.1,10.,1.,0.);
+	  if (j > 3+int(boatJump)) {
+      float boatX = fade(10., 10., -2., 1.5, 0.5)+fade(20.,13.,0.,-1.2,0.5);
+      vec4 boat = boat(pos, vec2(boatX, -0.15+sin(t*4.)*0.05+boatJump*0.03), 0., 1./(boatJump));
 		  if (boat.a < 0.0) {
 			  c = boat.rgb;
         break;
