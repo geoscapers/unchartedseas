@@ -158,8 +158,10 @@ void main( void ) {
 	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5)+0.40*(1.-waveOut)+fade(2.,4.,0.4,0.,0.5);	 
 
 	  // Kraken
+
+    
 	  if (j > 4) {
-      vec4 kr = kraken(pos, vec2(0.0, fade(25., 6., -1., -0.25, 1.)), 1.);
+      vec4 kr = kraken(pos, vec2(-0.5, fade(25., 6., -1., -0.25, 1.)), 1.);
 		  if (kr.a < 0.0) {
 			  c = kr.rgb;
         break;
@@ -167,10 +169,10 @@ void main( void ) {
 	  }
 
     // Boat
-    float boatJump = fade(20.,.1,10.,1.,0.);
+    float boatJump = fade(20.,.1,10.,0.,0.);
 	  if (j > 3+int(boatJump)) {
-      float boatX = fade(10., 10., -2., 1.5, 0.5)+fade(20.,13.,0.,-1.2,0.5);
-      vec4 boat = boat(pos, vec2(boatX, -0.15+sin(t*4.)*0.05+boatJump*0.03), 0., 1./(boatJump));
+      float boatX = fade(10., 10., -2., 1.5, 0.)+fade(20.,10.,0.,-1.2,0.5);
+      vec4 boat = boat(pos, vec2(boatX, -0.15+sin(t*4.)*0.05+boatJump*0.03), 0., 1.-(boatJump/30.));
 		  if (boat.a < 0.0) {
 			  c = boat.rgb;
         break;
