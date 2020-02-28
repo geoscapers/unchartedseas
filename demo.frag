@@ -75,6 +75,7 @@ vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
   return vec4(color, dist);
 }
 
+/*
 float cappedCone(vec3 p, float h, float r1, float r2)
 {
   vec2 q = vec2( length(p.xz), p.y );
@@ -85,6 +86,7 @@ float cappedCone(vec3 p, float h, float r1, float r2)
   float s = (cb.x<0.0 && ca.y<0.0) ? -1.0 : 1.0;
   return s*sqrt( min(dot2(ca),dot2(cb)) );
 }
+*/
 
 
 vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
