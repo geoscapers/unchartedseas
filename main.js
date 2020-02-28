@@ -82,8 +82,9 @@ bn.onaudioprocess = function(e) {
       o[i] = (lastOut + (0.02 * white)) / 1.02;
       lastOut = o[i];
       o[i] *= 3.5 * vol; // (roughly) compensate for gain, apply volume
-//      o[i] = o[i] * (1-scr) + Math.sin(t*1220) * scr;
-      //o[i] = Math.sin(t*20) * 0.6;
+      //var f = 128 << Math.floor((Math.sin(t*72)+1) * 8);
+      //var s = Math.sin(TAU*i/64); 
+      //o[i] = o[i] * (1-scr) + s * scr;
   }
 }
 
@@ -110,7 +111,7 @@ function draw() {
   vol= 0.2 + wave(2.7)*0.15 + wave(7.3, 2)*0.3; // Waves
   vol *= Math.min(t/9, 1); // Fade in
 
-  scr = mp(5, 4, 0, 0.5);
+  //scr = mp(1, 4, 0, 0.15);
 
   // Sound fade out TODO
 

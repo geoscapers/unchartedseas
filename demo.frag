@@ -94,15 +94,30 @@ float cappedCone(vec2 p, float h, float r1, float r2) {
 }
 */
 
-float cappedTri(vec2 pixel, vec2 center, float height, float baseLen, float tipLen) {
+/*
+
+  '       '
+   '  x  '
+    '   '
+*/
+float cappedTri(vec2 pixel, vec2 center, float height, float baseWidth, float botWidth) {
   
-  return 0.;
+  vec2 dist = abs(center - pixel);
+
+  float relPos = (center.y - pixel.y - height/2.) / height;
+
+  float dy = dist.y - height/2.;
+  float dx = dist.x - mix(baseWidth, botWidth, relPos) / 2.;
+
+  return max(dx, dy);
 }
 
 
 vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
-  float boat = distance(pixel, pos) - size * 0.3;
+  //float boat = distance(pixel, pos) - size * 0.3;
+  float s = size * 0.2;
+  float boat = cappedTri(pixel, pos, s, s*2., s/2.);
   
   vec2 delta = pixel - pos;
   float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
