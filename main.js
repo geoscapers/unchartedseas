@@ -8,10 +8,11 @@ var TAU = Math.PI * 2;
 var t = 0;
 
 // Setup canvas
-var canvas = document.querySelector('canvas');
-canvas.style.position = "fixed";
-canvas.style.left = canvas.style.top = 0;
-canvas.style.cursor = "none";
+var c = document.querySelector('canvas');
+var cs = c.style;
+cs.position = "fixed";
+cs.left = cs.top = 0;
+cs.cursor = "none";
 // canvas.width = window.innerWidth;
 // canvas.height = window.innerHeight;
 //canvas.width = 1366; //1920;
@@ -21,19 +22,20 @@ canvas.style.cursor = "none";
 
 // Setup openGL
 
-var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
 //var h = gl.drawingBufferHeight;
 //var w = gl.drawingBufferWidth;
 
 var pid = gl.createProgram();
-shader(gl.VERTEX_SHADER, vert);
-shader(gl.FRAGMENT_SHADER, frag);
+sh(gl.VERTEX_SHADER, vert);
+sh(gl.FRAGMENT_SHADER, frag);
 gl.linkProgram(pid);
 gl.useProgram(pid);
 
 var array = new Float32Array([-1, 3, -1, -1, 3, -1]);
-gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW);
+var ab = gl.ARRAY_BUFFER;
+gl.bindBuffer(ab, gl.createBuffer());
+gl.bufferData(ab, array, gl.STATIC_DRAW);
 
 var pos = gl.getAttribLocation(pid, "p");
 gl.vertexAttribPointer(pos, 2 /*components per vertex */, gl.FLOAT, false, 0, 0);
@@ -46,29 +48,26 @@ var resLoc = gl.getUniformLocation(pid, 'r');  // Resolution
 var ac = new (window.AudioContext || window.webkitAudioContext);
 
 // Brown noise
-var bufferSize = 4096;
+var bs = 4096;
+var vol = 0;
 var lastOut = 0.0;
-var bn = ac.createScriptProcessor(bufferSize, 1, 1);
+var bn = ac.createScriptProcessor(bs, 1, 1);
 bn.onaudioprocess = function(e) {
-  var output = e.outputBuffer.getChannelData(0);
-  for (var i = 0; i < bufferSize; i++) {
+  var o = e.outputBuffer.getChannelData(0);
+  for (var i = 0; i < bs; i++) {
       var white = (Math.random() * 2 - 1);
-      output[i] = (lastOut + (0.02 * white)) / 1.02;
-      lastOut = output[i];
-      output[i] *= 3.5; // (roughly) compensate for gain
+      o[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = o[i];
+      o[i] *= 3.5 * vol; // (roughly) compensate for gain, apply volume
   }
 }
 
-// Volume control for waves
-var g = ac.createGain();
-bn.connect(g);
-g.connect(ac.destination);
-
+bn.connect(ac.destination);
 
 // Draw a frame, also updates sounds
 function draw() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
   var h = gl.drawingBufferHeight;
   var w = gl.drawingBufferWidth;
 
@@ -83,9 +82,8 @@ function draw() {
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   // Sea sound
-  var vol= 0.2 + wave(2.7)*0.15 + wave(7.3, 2)*0.3; // Waves
+  vol= 0.2 + wave(2.7)*0.15 + wave(7.3, 2)*0.3; // Waves
   vol *= Math.min(t/9, 1); // Fade in
-  g.gain.value = vol
 
   // Have another frame later
   requestAnimationFrame(draw);
@@ -93,7 +91,7 @@ function draw() {
 
 
 // Utility function for compiling a shader.  NOTE: Uses global variable pid (shader program ID).
-function shader(type, src) {
+function sh(type, src) {
   var sid = gl.createShader(type);
   gl.shaderSource(sid, src);
   gl.compileShader(sid);

@@ -18,8 +18,10 @@ float fade(float startTime, float changeTime, float startValue, float endValue, 
   }
 }
 
+
 float surface(float d, float s) {
-    return 1. + 0.05 * sin(d*400.*(1.+s));
+  float berzerk = fade(50., 10., 1., 0.3, 1.); // Grow surface patterns towards end
+  return 1. + 0.05 * sin(d*400.*berzerk*(1.+s));
 }
 
 float arm(vec2 pixel, vec2 krakenPos, float direction, float len, float waviness) {
@@ -73,12 +75,27 @@ vec4 kraken(vec2 pixel, vec3 color, vec2 krakenPos) {
   return vec4(color, dist);
 }
 
+float cappedCone(vec3 p, float h, float r1, float r2)
+{
+  vec2 q = vec2( length(p.xz), p.y );
+  vec2 k1 = vec2(r2,h);
+  vec2 k2 = vec2(r2-r1,2.0*h);
+  vec2 ca = vec2(q.x-min(q.x,(q.y<0.0)?r1:r2), abs(q.y)-h);
+  vec2 cb = q - k1 + k2*clamp( dot(k1-q,k2)/dot2(k2), 0.0, 1.0 );
+  float s = (cb.x<0.0 && ca.y<0.0) ? -1.0 : 1.0;
+  return s*sqrt( min(dot2(ca),dot2(cb)) );
+}
+
+
 vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
   float boat = distance(pixel, pos) - 0.3;
   
   vec2 delta = pixel - pos;
   float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
+  float ad = abs(angle - a + TAU);
+
+  //if (ad > TAU/4.) boat += 1.0;
 
   vec3 boatColor = vec3(.7, .5, 0.2) * surface(boat, .4);
 

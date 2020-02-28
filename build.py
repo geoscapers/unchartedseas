@@ -223,6 +223,7 @@ minifyJavaScript("main.js")
 
 # Load input files
 mainJs = readFile(minimixedFilePrefix + "main.js") 
+#mainJs = readFile("main.js") 
 demoFrag = readFile(minimixedFilePrefix +  "demo.frag")  # Fix manually?
 
 #demoFrag = readFile("demo.frag") 
