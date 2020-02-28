@@ -77,7 +77,7 @@ vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
   float boat = distance(pixel, pos) - 0.3;
   
-  vec2 delta = pixel - krakenPos;
+  vec2 delta = pixel - pos;
   float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
 
   vec3 boatColor = vec3(.7, .5, 0.2) * surface(boat, .4);
@@ -112,7 +112,7 @@ void main( void ) {
 
 	  // Kraken
 	  if (j > 4) {
-      vec4 kr = kraken(pos, c, vec2(0.0, fade(25., 6., -1., -0.25, 1. + sin(t*3.)*0.03)));
+      vec4 kr = kraken(pos, c, vec2(0.0, fade(25., 6., -1., -0.25, 1.)));
 		  if (kr.a < 0.0) {
 			  c = kr.rgb;
         break;
