@@ -223,8 +223,9 @@ minifyJavaScript("main.js")
 
 # Load input files
 mainJs = readFile(minimixedFilePrefix + "main.js") 
-#demoFrag = readFile(minimixedFilePrefix +  "demo.frag")  # Fix manually?
-demoFrag = readFile("demo.frag") 
+demoFrag = readFile(minimixedFilePrefix +  "demo.frag")  # Fix manually?
+
+#demoFrag = readFile("demo.frag") 
 vertexShader = readFile(minimixedFilePrefix + "vertexShader.vert") 
 
 # Header
