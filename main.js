@@ -9,17 +9,27 @@ var t = 0;
 // Fadeout (pic and sound)
 var fadeOut = 0;
 
-
-/*
-// Programmable lights at Instanssi venue
-var socket = new WebSocket("ws://valot.party:9909");
+//light
+var socket = new WebSocket("ws://valot.party:9910");
 socket.onopen = function (event) {
-  socket.send([1,0,0]);
-}
-var light = 0;
-*/
-
-
+    var data = new Uint8Array(166);
+    data[0] = 1;
+    data[1] = 0;  
+    data[2] = 97;
+    data[3] = 0; 
+    function lightingLoop() {
+        for(var i = 0; i < 27; i++) {
+            var p = 4 + 6 * i; 
+            data[p + 0] = 1; // Tehosteen tyyppi on yksi eli valo
+            data[p + 1] = i; // Ensimmäinen valo löytyy indeksistä nolla
+            data[p + 4] = fadeOut*wave(2,i*0.4)*100 // Vihreä
+            data[p + 5] = fadeOut*wave(4,i*0.2)*155+50 // Sininen
+        }
+        socket.send(data); 
+        setTimeout(lightingLoop, 10);
+    }
+    lightingLoop();
+};
 
 // Setup canvas
 var c = document.querySelector('canvas');
@@ -170,8 +180,12 @@ function sh(type, src) {
  * @param {number} phase Seconds to transition start of wave.
  */
 function wave(waveLength, phase) {
-  return -Math.sin((t+(phase||0))*TAU/waveLength)/2 + 0.5;
+  return 0.5-Math.sin((t+(phase||0))*TAU/waveLength)/2;
 }
+
+
+
+
 
 // Start demo animation by calling draw
 draw();

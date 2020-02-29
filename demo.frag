@@ -15,8 +15,7 @@ float fade(float startTime, float changeTime, float startValue, float endValue) 
 
 
 float surface(float d, float s) {
-  float berzerk = fade(42., 10., 1., 0.3); // Grow surface patterns towards end
-  return 1. + 0.05 * sin(d*400.*berzerk*(1.+s)) + d * d * 0.4;
+  return 1. + 0.05 * sin(d*400.*fade(42., 10., 1., 0.3)*(1.+s)) + d * d * 0.4;
 }
 
 float arm(vec2 pixel, vec2 krakenPos, float direction, float len, float waviness) {
@@ -30,9 +29,11 @@ float arm(vec2 pixel, vec2 krakenPos, float direction, float len, float waviness
   
   float baseSize = 1.0;
 
+  //float a1 = mod(min(a - direction, direction-a) + TAU, TAU);
+  //return (a1 - (len - l) * baseSize) / 5.;
   float a1 = mod(a - direction + TAU, TAU);
   float a2 = mod(direction - a + TAU, TAU);
-
+  
   return (min(a1, a2) - (len - l) * baseSize) / 5.;
 }
 
