@@ -1,2 +1,4 @@
 # Temporary build directory for minimized files
 temp/
+
+node_modules/

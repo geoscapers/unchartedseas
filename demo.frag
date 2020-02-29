@@ -1,9 +1,9 @@
 // #version 100
-
 precision mediump float;
 
-uniform float t; // Time
-uniform vec2 r; // Resolution
+uniform vec4 r; // Time, resolution & fade.
+
+float t = r.z; // Extract time
 
 #define TAU 6.28318
 
@@ -135,7 +135,7 @@ vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
 void main( void ) {
   // Project position to approximately 0..1 range
-  vec2 pos = (gl_FragCoord.xy * 2.0 - r)/max(r.x, r.y);
+  vec2 pos = (gl_FragCoord.xy * 2.0 - r.xy)/max(r.x, r.y);
   float wave = 0.0;
   float waveOut = fade(9.,8.,0.,1.,1.);
 
@@ -197,7 +197,9 @@ void main( void ) {
 //  if (visibleWave > 0.) c = mix(vec3(0.0,0.1,0.2), vec3(0.6, 0.75, 0.9), visibleWave);
 
   //c.g = visibleWave / 1.0;
-	
+
+	c *= r.w; // Fade to black
+  
   gl_FragColor = vec4(c, 1.0);
 
 }

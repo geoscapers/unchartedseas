@@ -13,7 +13,7 @@ Build instructions for building on a linux system:
 The build script uses python, but it should be installed on most systems.
 
     sudo apt install npm
-    sudo npm install -g uglify-js
+    sudo npm install -g google-closure-compiler
 
 ### Build it
     ./build.sh

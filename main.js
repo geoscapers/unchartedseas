@@ -1,4 +1,3 @@
-"use strict";
 
 // Constants
 var startTime = new Date().getTime();
@@ -7,11 +6,15 @@ var TAU = Math.PI * 2;
 // Seconds since start of demo
 var t = 0;
 
+// Fadeout (pic and sound)
+var fadeOut = 0;
+
 // Setup canvas
 var c = document.querySelector('canvas');
 var cs = c.style;
 cs.position = "fixed";
-cs.left = cs.top = 0;
+cs.left = 0;
+cs.top = 0;
 cs.cursor = "none";
 // canvas.width = window.innerWidth;
 // canvas.height = window.innerHeight;
@@ -63,8 +66,7 @@ var pos = gl.getAttribLocation(pid, "p");
 gl.vertexAttribPointer(pos, 2 /*components per vertex */, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(pos);
 
-var timeLoc = gl.getUniformLocation(pid, 't'); // Time
-var resLoc = gl.getUniformLocation(pid, 'r');  // Resolution
+var parLoc = gl.getUniformLocation(pid, 'r');  // Resolution + time + fade
 
 // Sound
 var ac = new (window.AudioContext || window.webkitAudioContext);
@@ -101,15 +103,17 @@ function draw() {
   t = (new Date().getTime() - startTime) * 0.001;
 
   // Draw OpenGL scene 
-  gl.uniform2f(resLoc, w, h);
-  gl.uniform1f(timeLoc, t);
+  gl.uniform4f(parLoc, w, h, t, fadeOut);
   gl.viewport(0, 0, w, h);
   gl.clearColor(0, 0, 0, 0);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
+  // Calculate fade
+  fadeOut = Math.max(Math.min(Math.min((t-1)/3, 1), 30-t/2), 0);
+
   // Sea sound
-  vol= 0.2 + wave(2.7)*0.15 + wave(7.3, 2)*0.3; // Waves
-  vol *= Math.min(t/9, 1); // Fade in
+  vol= 0.2 + wave(2.7,0)*0.15 + wave(7.3, 2)*0.3; // Waves
+  vol *= fadeOut; // Fade in and out
 
   //scr = mp(1, 4, 0, 0.15);
 
@@ -127,7 +131,7 @@ function sh(type, src) {
   gl.compileShader(sid);
 
   // Uncomment for debugging shader errors:
-  //if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
+  if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
   
   gl.attachShader(pid, sid);
 }
