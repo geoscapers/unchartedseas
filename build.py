@@ -13,14 +13,14 @@ minimixedFilePrefix = "./temp/minimized_"
 # Create javascript variable with shader source
 def createShaderSource(name, script, decompression):
   if decompression:
-    return 'var ' + name + '=`' + script + '`.replace(/~/g, "return ").replace(/@/g, "vec2 ").replace(/\^/g, "float ");\n'
+    return 'var ' + name + '=`' + script + '`' + decompressionJavascript() + ';\n'
   else:
     return 'var ' + name + '=`' + script + '`;\n'
  
   # javascript strings can't be multiline by default, use ` strings.
 
-def minifyGlSl(fileName):
-  compressGlSlFile(fileName, minimixedFilePrefix + fileName, True)
+def minifyGlSl(fileName, compressSomeKeywords):
+  compressGlSlFile(fileName, minimixedFilePrefix + fileName, compressSomeKeywords)
   #os.system("glsl-minifier --shaderVersion 2  -i ./"+fileName+" -o " + minimixedFilePrefix + fileName)
 
 def minifyJavaScript(inFile, outFile):
@@ -33,8 +33,8 @@ def minifyJavaScript(inFile, outFile):
 ### Main build script
 
 # Run glsl through minimizer
-minifyGlSl("vertexShader.vert")
-minifyGlSl("demo.frag")
+minifyGlSl("vertexShader.vert", False)
+minifyGlSl("demo.frag", True)
 
 # Compose javascript to minimize
 demoFrag = readFile(minimixedFilePrefix +  "demo.frag")

@@ -161,12 +161,15 @@ function draw() {
 
 // Utility function for compiling a shader.  NOTE: Uses global variable pid (shader program ID).
 function sh(type, src) {
+  // DEBUG:
+  //console.log("shader source: " + src);
+
   var sid = gl.createShader(type);
   gl.shaderSource(sid, src);
   gl.compileShader(sid);
 
   // Uncomment for debugging shader errors:
-//  if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
+  //if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
   
   gl.attachShader(pid, sid);
 }

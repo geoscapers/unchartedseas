@@ -64,7 +64,7 @@ def stripDuplicateWhitespace(text):
   while (i < len(text)):
     c = text[i]
 
-    isWhiteSpace = c == ' ' or c == '\n' or c == '\t'
+    isWhiteSpace = c == ' ' or c == '\t' or c == '\n'
 
     # Only keep the first whitespace
     if not isWhiteSpace or (not wasWhiteSpace):
@@ -200,15 +200,18 @@ def shortenIdentifiers(text):
 
 
 def compressCommonKeywords(s):
-    s = s.replace("float ", "^")
-    s = s.replace("vec2 ", "@")
-    s = s.replace("return ", "~")
+    s = s.replace("vec", "~")
+    s = s.replace("float ", "^").replace("float", "^")
+    s = s.replace("return ", "@").replace("return", "@")
     return s
+
+# Retruns decompression to append after packed glsl string, contains javascript .replace commands.
+def decompressionJavascript():
+    return '.replace(/@/g, "return ").replace(/\^/g, "float ").replace(/\~/g, "vec");'
 
 # Main compression function, takes glsl string as input and returns compressed glsl code
 # If replaceKeywords is True, certain keywords in the glsl will be replaced with special characters.
-# Use the following javascript to expand it back:
-#   glsl = glsl.replace(/~/g, "return ").replace(/@/g, "vec2 ").replace(/\^/g, "float ");
+# Use the javascript returned by decompressionJavascript() to decompress.
 def compressGlSl(glslCode, replaceKeywords):
     s = glslCode.strip()
     s = stripComments(s)
