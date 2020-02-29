@@ -46,7 +46,7 @@ vec4 kraken(vec2 pixel, vec2 krakenPos, float size) {
   float arms = 8.0;  
   float dist = body;	
   for (int i = 1; i < 9; i++) {
-    dist = min(dist, arm(pixel, krakenPos, float(i) * TAU / arms - t/3., 0.5, .1));
+    dist = min(dist, arm(pixel, krakenPos, float(i) * TAU / arms - t/3., 0.5 * size, .1));
   }
 
   // Colorize kraken areas
