@@ -33,4 +33,4 @@ probably can run into bugs on other shaders, so use at own risk.
 
 It was written because we couldn't find any easy to use command line GLSL
 packer for Linux.  The one we found optimized for loops to while loops, 
-that WebGL in the browsers didn't like.
+which WebGL in the browsers didn't like.
