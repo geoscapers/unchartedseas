@@ -109,7 +109,7 @@ function draw() {
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   // Calculate fade
-  fadeOut = Math.max(Math.min(Math.min((t-1)/3, 1), 30-t/2), 0);
+  fadeOut = Math.max(Math.min(Math.min((t-1)/3, 1), (46-t)/3), 0);
 
   // Sea sound
   vol= 0.2 + wave(2.7,0)*0.15 + wave(7.3, 2)*0.3; // Waves
@@ -131,7 +131,7 @@ function sh(type, src) {
   gl.compileShader(sid);
 
   // Uncomment for debugging shader errors:
-  if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
+  //if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
   
   gl.attachShader(pid, sid);
 }
