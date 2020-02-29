@@ -23,7 +23,7 @@ socket.onopen = function (event) {
             data[p + 0] = 1; // Tehosteen tyyppi on yksi eli valo
             data[p + 1] = i; // Ensimmäinen valo löytyy indeksistä nolla
             data[p + 4] = fadeOut*wave(2,i*0.4)*100 // Vihreä
-            data[p + 5] = fadeOut*wave(4,i*0.2)*155+50 // Sininen
+            data[p + 5] = fadeOut*(wave(4,i*0.2)*155+50) // Sininen
         }
         socket.send(data); 
         setTimeout(lightingLoop, 10);
