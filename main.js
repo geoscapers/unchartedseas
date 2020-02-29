@@ -9,6 +9,18 @@ var t = 0;
 // Fadeout (pic and sound)
 var fadeOut = 0;
 
+
+/*
+// Programmable lights at Instanssi venue
+var socket = new WebSocket("ws://valot.party:9909");
+socket.onopen = function (event) {
+  socket.send([1,0,0]);
+}
+var light = 0;
+*/
+
+
+
 // Setup canvas
 var c = document.querySelector('canvas');
 var cs = c.style;
@@ -93,6 +105,9 @@ bn.onaudioprocess = function(e) {
 bn.connect(ac.destination);
 
 // Draw a frame, also updates sounds
+/*
+var tick = 0;
+*/
 function draw() {
   c.width = window.innerWidth;
   c.height = window.innerHeight;
@@ -115,6 +130,16 @@ function draw() {
   vol= 0.2 + wave(2.7,0)*0.15 + wave(7.3, 2)*0.3; // Waves
   vol *= fadeOut; // Fade in and out
 
+  /*
+  // Lights
+  tick++;
+  if (tick > 100) {
+    tick = 0;
+    socket.send([1, 1 + light % 20, 0,  floor(wave(TAU*t,0) * 128), 0, 0]);
+    light++;
+  }
+  */
+
   //scr = mp(1, 4, 0, 0.15);
 
   // Sound fade out TODO
@@ -131,7 +156,7 @@ function sh(type, src) {
   gl.compileShader(sid);
 
   // Uncomment for debugging shader errors:
-  //if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
+//  if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
   
   gl.attachShader(pid, sid);
 }
@@ -139,6 +164,7 @@ function sh(type, src) {
 
 /**
  * Utility method for scaled sine waves, starts at 0 at time t=0, phase is added to time parameter.
+ * Returns value in range 0..1
  * NOTE: Uses global variable t (time).
  * @param {number} waveLength duration of complete wave (up - down - back) in seconds.
  * @param {number} phase Seconds to transition start of wave.

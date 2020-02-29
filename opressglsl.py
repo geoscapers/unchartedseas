@@ -199,20 +199,31 @@ def shortenIdentifiers(text):
   return "".join(tokens)
 
 
+def compressCommonKeywords(s):
+    s = s.replace("float ", "^")
+    s = s.replace("vec2 ", "@")
+    s = s.replace("return ", "~")
+    return s
+
 # Main compression function, takes glsl string as input and returns compressed glsl code
-def compressGlSl(glslCode):
+# If replaceKeywords is True, certain keywords in the glsl will be replaced with special characters.
+# Use the following javascript to expand it back:
+#   glsl = glsl.replace(/~/g, "return ").replace(/@/g, "vec2 ").replace(/\^/g, "float ");
+def compressGlSl(glslCode, replaceKeywords):
     s = glslCode.strip()
     s = stripComments(s)
     s = stripExtraWhitespace(s)
     s = stripDuplicateWhitespace(s)
     s = shortenIdentifiers(s)
     s = s.strip()
+    if replaceKeywords:
+        s = compressCommonKeywords(s)
     return s
 
 # Main compression function, takes glsl input and output file
-def compressGlSlFile(fileName, outFile):
+def compressGlSlFile(fileName, outFile, replaceKeywords):
     s = readFile(fileName)
-    s = compressGlSl(s)
+    s = compressGlSl(s, replaceKeywords)
     writeFile(outFile, s)
 
 

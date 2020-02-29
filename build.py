@@ -11,11 +11,16 @@ minimixedFilePrefix = "./temp/minimized_"
 
 
 # Create javascript variable with shader source
-def createShaderSource(name, script):
-  return 'var ' + name + '=`' + script + '`\n' # javascript strings can't be multiline by default, use ` strings.
+def createShaderSource(name, script, decompression):
+  if decompression:
+    return 'var ' + name + '=`' + script + '`.replace(/~/g, "return ").replace(/@/g, "vec2 ").replace(/\^/g, "float ");\n'
+  else:
+    return 'var ' + name + '=`' + script + '`;\n'
+ 
+  # javascript strings can't be multiline by default, use ` strings.
 
 def minifyGlSl(fileName):
-  compressGlSlFile(fileName, minimixedFilePrefix + fileName)
+  compressGlSlFile(fileName, minimixedFilePrefix + fileName, True)
   #os.system("glsl-minifier --shaderVersion 2  -i ./"+fileName+" -o " + minimixedFilePrefix + fileName)
 
 def minifyJavaScript(inFile, outFile):
@@ -35,7 +40,7 @@ minifyGlSl("demo.frag")
 demoFrag = readFile(minimixedFilePrefix +  "demo.frag")
 vertexShader = readFile(minimixedFilePrefix + "vertexShader.vert")
 uncompressedJs = readFile("main.js")
-uncompressedScript = '"use strict";\n' + createShaderSource("vert", vertexShader) + createShaderSource("frag", demoFrag) +  uncompressedJs
+uncompressedScript = '"use strict";\n' + createShaderSource("vert", vertexShader, False) + createShaderSource("frag", demoFrag, True) +  uncompressedJs
 writeFile("./temp/main_with_shaders.js", uncompressedScript)
 
 # Run javascript through minimizer
@@ -55,6 +60,9 @@ indexHtml = indexHtml + "</body></html>"
 
 # Write
 writeFile(outputFileName, indexHtml)
+
+## Pack with pnginator
+#os.system("ruby ./tools/pnginator.rb " + outputFileName + " " + outputFileName) # Doesn't run in webpages anymore..
 
 # TODO: Run index.html through PNG minimizer or similar for added compression
 
