@@ -101,13 +101,13 @@ float cappedCone(vec2 p, float h, float r1, float r2) {
     '   '
 */
 float cappedTri(vec2 pixel, vec2 center, float height, float baseWidth, float botWidth) {
-  
+
   vec2 dist = abs(center - pixel);
 
-  float relPos = (center.y - pixel.y - height/2.) / height;
+  float relPos = clamp(-(center.y - pixel.y - height/2.) / height, 0., 1.);
 
   float dy = dist.y - height/2.;
-  float dx = dist.x - mix(baseWidth, botWidth, relPos) / 2.;
+  float dx = dist.x - mix(botWidth, baseWidth, relPos) / 2.;
 
   return max(dx, dy);
 }
@@ -116,18 +116,20 @@ float cappedTri(vec2 pixel, vec2 center, float height, float baseWidth, float bo
 vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
   //float boat = distance(pixel, pos) - size * 0.3;
-  float s = size * 0.2;
-  float boat = cappedTri(pixel, pos, s, s*2., s/2.);
+  float s = size * 0.13;
+  float hull = cappedTri(pixel, pos, s*.7, s*3., s*2.);
+  float mast = cappedTri(pixel, pos - vec2(0., -s*1.7), s*3., s*0.1, s*0.1);
+  float boat = min(hull, mast);
+
+  float sail = cappedTri(pixel, pos - vec2(0., -s*1.8), s*2.5, s*0.3, s*2.7);
   
-  vec2 delta = pixel - pos;
-  float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
-  float ad = abs(angle - a + TAU);
 
-  //if (ad > TAU/4.) boat += 1.0;
-
-  vec3 boatColor = vec3(.7, .5, 0.2) * surface(boat, .4);
-
-  return vec4(boatColor, boat);
+  if (boat < 0.) {
+    return vec4(vec3(.7, .5, 0.2) * surface(boat, .4), boat);
+  }
+  else {
+    return vec4(vec3(.8, .7, .9) * surface(sail, .4), sail); 
+  }
 }
 
 
