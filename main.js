@@ -18,7 +18,7 @@ socket.onopen = function (event) {
     data[2] = 97;
     data[3] = 0; 
     function lightingLoop() {
-        for(var i = 0; i < 27; i++) {
+        for(var i = 1; i < 22; i++) {
             var p = 4 + 6 * i; 
             data[p + 0] = 1; // Tehosteen tyyppi on yksi eli valo
             data[p + 1] = i; // Ensimmäinen valo löytyy indeksistä nolla
