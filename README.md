@@ -3,7 +3,8 @@
 
 by GeoScapers
 
-Code: Shiera & FractalPixel
+Code: Shiera & FractalPixel.  
+GLSL Packer by FractalPixel.
 
 ## Running
 Open ./build/index.html in a non-microsoft browser.
@@ -14,7 +15,7 @@ Build instructions for building on a linux system:
 ### Install required tools
 The build script uses python, but it should be installed on most systems.
 It uses the google closure compiler for packing the javascript.
-For packing the GlSl shader code it uses a custom party-coded GlSl packer in python.
+For packing the GLSL shader code it uses a custom party-coded GLSL packer in python.
 
     sudo apt install npm
     sudo npm install -g google-closure-compiler
@@ -25,8 +26,11 @@ For packing the GlSl shader code it uses a custom party-coded GlSl packer in pyt
     
 The compiled demo is found in build/index.html.
 
+## Reusing
+Feel free to use the GLSL packer (opressglsl.py) in your own projects.  
+Credits appreciated but not necessary.  Beware that it
+probably can run into bugs on other shaders, so use at own risk.
 
-    
-
-
-
+It was written because we couldn't find any easy to use command line GLSL
+packer for Linux.  The one we found optimized for loops to while loops, 
+that WebGL in the browsers didn't like.
