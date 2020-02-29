@@ -1,6 +1,211 @@
 <html><body><canvas></canvas><script>var vert=`attribute vec4 p;void main(void){gl_Position=p;}`
-var frag=`
-precision mediump float;uniform float t;uniform vec2 r;
-#define b 6.28318
-float e(float f,float g,float h,float m,float n){if(t<=f)return h;else if(t>=f+g)return m;else{float t=(t-f)/g;t=mix(t,.5-cos(t*b/2.)/2.,n);return mix(h,m,t);}}float o(float d,float s){float p=e(50.,10.,1.,.3,1.);return 1.+.05*sin(d*400.*p*(1.+s));}float q(vec2 u,vec2 v,float w,float z,float A){vec2 B=u-v;float l=length(B);float a=atan(B.y,B.x);w+=cos(l*13.-t*2.)*A;float C=1.;return(mod(abs(mod(a+b/4.,b)-mod(w,b)),b)-(z-l)*C)/5.;}vec4 D(vec2 u,vec2 v,float E){float F=E*(.2+cos(t*1.7)*.02);float G=distance(v,u)-F;float H=8.;float I=G;for(int i=1;i<9;i++){I=min(I,q(u,v,float(i)*b/H-t/3.,.5*E,.1));}vec3 J=vec3(0.);if(I<0.){J=vec3(.1+I*2.,.4-I*.5,.3+I)*o(I,.5);float K=(.65+.05*sin(t*b/5.))*F;float L=distance(v,u)-K;if(L<0.){J.rgb=vec3(.3,.1,.2);J.rgb*=1.+L*7.;J*=o(L,.5)*1.5-.2;}vec2 B=u-v;float a=atan(B.y,B.x)+t*.1+sin(t*4.)*.05;float M=.16*F*(acos(sin(a*19.))*4./b-.8);if(L< -.005 && L+M>0.){J=vec3(.8,.7,.6)*o(L+M,.1);}}return vec4(J,I);}float N(vec2 u,vec2 O,float P,float Q,float R){vec2 I=abs(O-u);float S=clamp(-(O.y-u.y-P/2.)/P,0.,1.);float T=I.y-P/2.;float U=I.x-mix(R,Q,S)/2.;return max(U,T);}vec4 V(vec2 u,vec2 W,float X,float E){float s=E*.13;float Y=N(u,W,s*.7,s*3.,s*2.);float Z=N(u,W-vec2(0.,-s*1.7),s*3.,s*.1,s*.1);float V=min(Y,Z);float ba=N(u,W-vec2(0.,-s*1.8),s*2.5,s*.3,s*2.7);if(V<0.){return vec4(vec3(.7,.5,.2)*o(V,.4),V);}else{return vec4(vec3(.8,.7,.9)*o(ba,.4),ba);}}void main(void){vec2 W=(gl_FragCoord.xy*2.-r)/max(r.x,r.y);float bb=0.;float bc=e(9.,8.,0.,1.,1.);vec3 c=mix(vec3(.7,.9,.8),vec3(.4,.6,.9),W.y+.5);c*=1.+.3*o(W.y,3.-W.y*3.);for(int j=1;j<=15;j+=1){float i=float(j);float x=(sin(i*i*2.1019)+1.)/2.;float bd=bc*x*b;float be=(t-5.)*(6.-i*.1);float bf=.025;float bg=max(0.,bf-bc*i*.0016);float k=b/bf;float bh=5.+i*bc;float bi=((1.-1./16.*pow((k*bf),2.))*cos(W.x*bh+be+bd)+.5*k*bf*cos(2.*bh*W.x+be+bd));float bb=bg*pow(bi,1.)+sin(be+x*12.2)*.01/i+bc*(i*(.06-i*.0009)-.5)+.40*(1.-bc)+e(2.,4.,.4,0.,.5);float bj=e(22.,.1,10.,0.,0.);if(j>4+int(bj)){float bk=e(20.,.1,0.,1.,0.);float bl=e(26.,.1,1.,0.,0.);float bm=e(26.,3.5,0.,.9,1.);float bn= -1.1+bk+sin(t-21.)*bk*bl-1.1+bl+bm;vec4 bo=D(W,vec2(-.5+.7*bm,bn),1.-(bj/30.));if(bo.a<0.){c=bo.rgb;break;}}float bp=e(23.,.1,10.,0.,0.);if(j>3+int(bp)){float bq=e(13.,9.,-2.,1.4,0.)+e(22.1,8.,0.,-1.3,1.);vec4 V=V(W,vec2(bq,-.32+sin(t*4.)*.03+bp*.045),0.,e(28.,2.,1.,0.,1.)*1.-(bp/30.));if(V.a<0.){c=V.rgb;break;}}if(W.y<bb){c=mix(vec3(0.,.1,.2),vec3(.6,.6+i/60.,.9),.05*i);c*=o(W.y-bb,i/8.);break;}}gl_FragColor=vec4(c,1.);}`
-"use strict";var startTime=(new Date).getTime(),TAU=2*Math.PI,t=0,c=document.querySelector("canvas"),cs=c.style;function mp(e,r,a,o){return a+(o-a)*(t<e?0:e+r<t?1:(t-e)/r)}cs.position="fixed",cs.left=cs.top=0,cs.cursor="none";var gl=c.getContext("webgl")||c.getContext("experimental-webgl"),pid=gl.createProgram();sh(gl.VERTEX_SHADER,vert),sh(gl.FRAGMENT_SHADER,frag),gl.linkProgram(pid),gl.useProgram(pid);var array=new Float32Array([-1,3,-1,-1,3,-1]),ab=gl.ARRAY_BUFFER;gl.bindBuffer(ab,gl.createBuffer()),gl.bufferData(ab,array,gl.STATIC_DRAW);var pos=gl.getAttribLocation(pid,"p");gl.vertexAttribPointer(pos,2,gl.FLOAT,!1,0,0),gl.enableVertexAttribArray(pos);var timeLoc=gl.getUniformLocation(pid,"t"),resLoc=gl.getUniformLocation(pid,"r"),ac=new(window.AudioContext||window.webkitAudioContext),scr=0,bs=4096,vol=0,lastOut=0,bn=ac.createScriptProcessor(bs,1,1);function draw(){c.width=window.innerWidth,c.height=window.innerHeight;var e=gl.drawingBufferHeight,r=gl.drawingBufferWidth;t=.001*((new Date).getTime()-startTime),gl.uniform2f(resLoc,r,e),gl.uniform1f(timeLoc,t),gl.viewport(0,0,r,e),gl.clearColor(0,0,0,0),gl.drawArrays(gl.TRIANGLES,0,3),vol=.2+.15*wave(2.7)+.3*wave(7.3,2),vol*=Math.min(t/9,1),requestAnimationFrame(draw)}function sh(t,e){var r=gl.createShader(t);gl.shaderSource(r,e),gl.compileShader(r),gl.attachShader(pid,r)}function wave(e,r){return-Math.sin((t+(r||0))*TAU/e)/2+.5}bn.onaudioprocess=function(t){for(var e=t.outputBuffer.getChannelData(0),r=0;r<bs;r++){var a=2*Math.random()-1;e[r]=(lastOut+.02*a)/1.02,lastOut=e[r],e[r]*=3.5*vol}},bn.connect(ac.destination),draw();</script></body></html>
+var frag=`// #version 100
+
+precision mediump float;
+
+uniform float t; // Time
+uniform vec2 r; // Resolution
+
+#define TAU 6.28318
+
+// Fade over time. start time: seconds when fade starts, changeTime: seconds that fade takes, startValue: value before fade, endValue: value after fade.
+float fade(float startTime, float changeTime, float startValue, float endValue, float smoothing) {
+  if (t <= startTime) return startValue;
+  else if (t >= startTime + changeTime) return endValue;
+  else  {
+    float t = (t -startTime) / changeTime; // Linear
+    t = mix(t, .5 - cos(t*TAU/2.)/2., smoothing); // Smooth
+    return mix(startValue, endValue, t); // Interpolate
+  }
+}
+
+
+float surface(float d, float s) {
+  float berzerk = fade(50., 10., 1., 0.3, 1.); // Grow surface patterns towards end
+  return 1. + 0.05 * sin(d*400.*berzerk*(1.+s));
+}
+
+float arm(vec2 pixel, vec2 krakenPos, float direction, float len, float waviness) {
+  
+  vec2 delta = pixel - krakenPos;
+  float l = length(delta);
+  float a = atan(delta.y, delta.x);
+
+  // Wave
+  direction += cos(l * 13. - t * 2.) * waviness;
+  
+  float baseSize = 1.0;
+  return (mod(abs(mod(a+TAU/4., TAU) - mod(direction, TAU)), TAU) - (len - l)*baseSize) / 5.;
+}
+
+
+vec4 kraken(vec2 pixel, vec2 krakenPos, float size) {
+  float krakenSize = size * (0.2 + cos(t*1.7)*0.02);
+  float body = distance(krakenPos, pixel) - krakenSize;
+	
+  // Tentacles
+  float arms = 8.0;  
+  float dist = body;	
+  for (int i = 1; i < 9; i++) {
+    dist = min(dist, arm(pixel, krakenPos, float(i) * TAU / arms - t/3., 0.5 * size, .1));
+  }
+
+  // Colorize kraken areas
+  vec3 color = vec3(0.);
+  if (dist < 0.0) {
+    // Krakencolor
+    color = vec3(0.1 + dist*2., 0.4 - dist*0.5, 0.3 + dist)  * surface(dist, .5);
+
+    // Mouth
+    float mouthSize = (0.65 + 0.05 * sin(t*TAU/5.)) * krakenSize;
+    float mouth = distance(krakenPos, pixel) - mouthSize;
+    if (mouth < 0.) {
+      color.rgb = vec3(0.3, 0.1, 0.2);
+      color.rgb *= 1. + mouth * 7.;
+      color *= surface(mouth, .5) * 1.5 - 0.2;
+    }
+
+    // Teeth
+    vec2 delta = pixel - krakenPos;
+    float a = atan(delta.y, delta.x) + t * 0.1 + sin(t*4.) * 0.05;
+    float teeth = 0.16 * krakenSize * (acos(sin(a * 19.)) * 4./TAU - 0.8);  // Neat trick for getting sawtooth wave!
+    if (mouth < -0.005 && mouth + teeth > 0.) {
+      color = vec3(0.8, 0.7, 0.6) * surface(mouth + teeth, .1);
+    }
+
+  } 
+
+  return vec4(color, dist);
+}
+
+/*
+float cappedCone(vec2 p, float h, float r1, float r2) {
+  
+  vec2 k1 = vec2(r2,h);
+  
+  vec2 k2 = vec2(r2-r1,2.0*h);
+  
+  vec2 ca = vec2(p.x-min(p.x,(p.y<0.0) ? r1 : r2 ), abs(p.y)-h);
+  
+  vec2 cb = q - k1 + k2*clamp( dot(k1-q,k2)/dot2(k2), 0.0, 1.0 );
+  
+  float s = (cb.x<0.0 && ca.y<0.0) ? -1.0 : 1.0;
+  
+  return s*sqrt( min(dot2(ca),dot2(cb)) );
+}
+*/
+
+/*
+
+  '       '
+   '  x  '
+    '   '
+*/
+float cappedTri(vec2 pixel, vec2 center, float height, float baseWidth, float botWidth) {
+
+  vec2 dist = abs(center - pixel);
+
+  float relPos = clamp(-(center.y - pixel.y - height/2.) / height, 0., 1.);
+
+  float dy = dist.y - height/2.;
+  float dx = dist.x - mix(botWidth, baseWidth, relPos) / 2.;
+
+  return max(dx, dy);
+}
+
+
+vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
+
+  //float boat = distance(pixel, pos) - size * 0.3;
+  float s = size * 0.22;
+  float hull = cappedTri(pixel, pos, s*.7, s*3., s*2.);
+  float mast = cappedTri(pixel, pos - vec2(0., -s*1.7), s*3., s*0.1, s*0.1);
+  float boat = min(hull, mast);
+
+  float sail = cappedTri(pixel, pos - vec2(0., -s*1.8), s*2.5, s*0.3, s*2.7);
+  
+
+  if (boat < 0.) {
+    return vec4(vec3(.7, .5, 0.2) * surface(boat, .4), boat);
+  }
+  else {
+    return vec4(vec3(.8, .7, .9) * surface(sail, .4), sail); 
+  }
+}
+
+
+void main( void ) {
+  // Project position to approximately 0..1 range
+  vec2 pos = (gl_FragCoord.xy * 2.0 - r)/max(r.x, r.y);
+  float wave = 0.0;
+  float waveOut = fade(9.,8.,0.,1.,1.);
+
+
+  // Sky color by default
+  vec3 c = mix(vec3(.7, 0.9,0.8), vec3(.4, .6,.9), pos.y+0.5);
+  c *= 1. + 0.3 * surface(pos.y, 3.-pos.y*3.);	
+	
+  for (int j = 1; j <= 15; j+=1) {	
+    float i = float(j);
+	  float x = (sin(i*i*2.1019)+1.0)/2.0;
+	  float wavephase = waveOut*x*TAU;
+	  //float wavephase = 0.0;
+	  float t1 = (t-5.)*(6.-i*.1);	
+	  float waveSize = 0.025;
+	  float waveAmp = max(0.0,waveSize - waveOut*i*0.0016);
+	
+	  float k = TAU/waveSize;
+	  float waveshort = 5.0+i*waveOut;	
+	  float wavestokes = ((1.0-1.0/16.0*pow((k*waveSize),2.0))*cos(pos.x*waveshort+t1+wavephase) + 0.5*k*waveSize*cos(2.0*waveshort*pos.x+t1+wavephase));
+	  //wave amplitude+wavewobble+waveshift-move+startshift+fade in
+	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5)+0.40*(1.-waveOut)+fade(2.,4.,0.4,0.,1.);	 
+
+	  // Kraken
+
+    float krakenJump = fade(23.,1.,10.,0.,1.);
+    float krakenEnd = fade(39.,1.,0.,-4.,1.);
+	  if (j > 4+int(krakenJump)+int(krakenEnd)) {
+      float krakenIn  = fade(22.,.1,0.,1.,1.);
+      float krakenOut = fade(27.,.1,1.,0.,1.);
+      float krakenEat = fade(27., 3.5, 0., .97, 1.);
+      float krakenY = -1.1+krakenIn+sin(t-22.)*krakenIn*krakenOut-1.1+krakenOut+krakenEat+sin(t-31.5)*fade(31.5,.1,0.,1.,1.);
+      
+      //vec4 kr = kraken(pos, vec2(-0.5+.7*krakenEat, krakenY), 1.-(krakenJump/30.));
+      vec4 kr = kraken(pos, vec2(-0.5+.7*krakenEat, krakenY), 1.-(krakenJump/30.)+fade(38.5,2.5,0.,11.,1.));
+			 if (kr.a < 0.0) {
+        c = kr.rgb;
+        break;
+		  }      
+	  }
+
+    // Boat
+    float boatJump = fade(25.,.1,10.,0.,0.);
+	  if (j > 3+int(boatJump)) {
+      float boatX = fade(14., 11., -1.5, 1.4, 1.)+fade(25.1,7.,0.,-1.3,1.);
+      vec4 boat = boat(pos, vec2(boatX, -0.31+sin(t*4.)*0.024+boatJump*0.044), 0., fade(29.3,1.7,1.,0.,1.)*1.-(boatJump/19.));
+		  if (boat.a < 0.0) {
+			  c = boat.rgb;
+        break;
+		  }      
+	  }
+
+    // Wave
+	  if (pos.y < wave) {
+      c = mix(vec3(0.0,0.1,0.2), vec3(0.6, 0.6+i/60., 0.9), 0.05*i);
+	    c *= surface(pos.y - wave, i/8.);  
+      break;
+	  }
+  }
+
+//  if (visibleWave > 0.) c = mix(vec3(0.0,0.1,0.2), vec3(0.6, 0.75, 0.9), visibleWave);
+
+  //c.g = visibleWave / 1.0;
+	
+  gl_FragColor = vec4(c, 1.0);
+
+}
+
+
+
+`
+"use strict";var startTime=(new Date).getTime(),TAU=2*Math.PI,t=0,c=document.querySelector("canvas"),cs=c.style;function mp(e,r,a,o){return a+(o-a)*(t<e?0:e+r<t?1:(t-e)/r)}cs.position="fixed",cs.left=cs.top=0,cs.cursor="none";var gl=c.getContext("webgl")||c.getContext("experimental-webgl"),pid=gl.createProgram();sh(gl.VERTEX_SHADER,vert),sh(gl.FRAGMENT_SHADER,frag),gl.linkProgram(pid),gl.useProgram(pid);var array=new Float32Array([-1,3,-1,-1,3,-1]),ab=gl.ARRAY_BUFFER;gl.bindBuffer(ab,gl.createBuffer()),gl.bufferData(ab,array,gl.STATIC_DRAW);var pos=gl.getAttribLocation(pid,"p");gl.vertexAttribPointer(pos,2,gl.FLOAT,!1,0,0),gl.enableVertexAttribArray(pos);var timeLoc=gl.getUniformLocation(pid,"t"),resLoc=gl.getUniformLocation(pid,"r"),ac=new(window.AudioContext||window.webkitAudioContext),scr=0,bs=4096,vol=0,lastOut=0,bn=ac.createScriptProcessor(bs,1,1);function draw(){c.width=window.innerWidth,c.height=window.innerHeight;var e=gl.drawingBufferHeight,r=gl.drawingBufferWidth;t=.001*((new Date).getTime()-startTime),gl.uniform2f(resLoc,r,e),gl.uniform1f(timeLoc,t),gl.viewport(0,0,r,e),gl.clearColor(0,0,0,0),gl.drawArrays(gl.TRIANGLES,0,3),vol=.2+.15*wave(2.7)+.3*wave(7.3,2),vol*=Math.min(t/9,1),requestAnimationFrame(draw)}function sh(t,e){var r=gl.createShader(t);gl.shaderSource(r,e),gl.compileShader(r),gl.getShaderParameter(r,gl.COMPILE_STATUS)||console.error(gl.getShaderInfoLog(r)),gl.attachShader(pid,r)}function wave(e,r){return-Math.sin((t+(r||0))*TAU/e)/2+.5}bn.onaudioprocess=function(t){for(var e=t.outputBuffer.getChannelData(0),r=0;r<bs;r++){var a=2*Math.random()-1;e[r]=(lastOut+.02*a)/1.02,lastOut=e[r],e[r]*=3.5*vol}},bn.connect(ac.destination),draw();</script></body></html>

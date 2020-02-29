@@ -127,7 +127,7 @@ function sh(type, src) {
   gl.compileShader(sid);
 
   // Uncomment for debugging shader errors:
-  //if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
+  if (!gl.getShaderParameter(sid, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sid));
   
   gl.attachShader(pid, sid);
 }
