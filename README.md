@@ -6,6 +6,8 @@ by GeoScapers
 Code: Shiera & FractalPixel.  
 GLSL Packer by FractalPixel.
 
+Uses the party lighting at instanssi.
+
 ## Running
 Open ./build/index.html in a non-microsoft browser.
 
