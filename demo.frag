@@ -116,7 +116,7 @@ float cappedTri(vec2 pixel, vec2 center, float height, float baseWidth, float bo
 vec4 boat(vec2 pixel, vec2 pos, float angle, float size) {
 
   //float boat = distance(pixel, pos) - size * 0.3;
-  float s = size * 0.13;
+  float s = size * 0.22;
   float hull = cappedTri(pixel, pos, s*.7, s*3., s*2.);
   float mast = cappedTri(pixel, pos - vec2(0., -s*1.7), s*3., s*0.1, s*0.1);
   float boat = min(hull, mast);
@@ -157,29 +157,31 @@ void main( void ) {
 	  float waveshort = 5.0+i*waveOut;	
 	  float wavestokes = ((1.0-1.0/16.0*pow((k*waveSize),2.0))*cos(pos.x*waveshort+t1+wavephase) + 0.5*k*waveSize*cos(2.0*waveshort*pos.x+t1+wavephase));
 	  //wave amplitude+wavewobble+waveshift-move+startshift+fade in
-	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5)+0.40*(1.-waveOut)+fade(2.,4.,0.4,0.,0.5);	 
+	  float wave = waveAmp*pow(wavestokes,1.0)+sin(t1+x*12.2)*0.01/i+waveOut*(i*(0.06-i*0.0009)-0.5)+0.40*(1.-waveOut)+fade(2.,4.,0.4,0.,1.);	 
 
 	  // Kraken
 
-    float krakenJump = fade(22.,.1,10.,0.,0.);
-	  if (j > 4+int(krakenJump)) {
-      float krakenIn  = fade(20.,.1,0.,1.,0.);
-      float krakenOut = fade(26.,.1,1.,0.,0.);
-      float krakenEat = fade(26., 3.5, 0., .9, 1.);
-      float krakenY = -1.1+krakenIn+sin(t-21.)*krakenIn*krakenOut-1.1+krakenOut+krakenEat;
-      //
-      vec4 kr = kraken(pos, vec2(-0.5+.7*krakenEat, krakenY), 1.-(krakenJump/30.));
-		  if (kr.a < 0.0) {
-			  c = kr.rgb;
+    float krakenJump = fade(23.,1.,10.,0.,1.);
+    float krakenEnd = fade(39.,1.,0.,-4.,1.);
+	  if (j > 4+int(krakenJump)+int(krakenEnd)) {
+      float krakenIn  = fade(22.,.1,0.,1.,1.);
+      float krakenOut = fade(27.,.1,1.,0.,1.);
+      float krakenEat = fade(27., 3.5, 0., .97, 1.);
+      float krakenY = -1.1+krakenIn+sin(t-22.)*krakenIn*krakenOut-1.1+krakenOut+krakenEat+sin(t-31.5)*fade(31.5,.1,0.,1.,1.);
+      
+      //vec4 kr = kraken(pos, vec2(-0.5+.7*krakenEat, krakenY), 1.-(krakenJump/30.));
+      vec4 kr = kraken(pos, vec2(-0.5+.7*krakenEat, krakenY), 1.-(krakenJump/30.)+fade(38.5,2.5,0.,11.,1.));
+			 if (kr.a < 0.0) {
+        c = kr.rgb;
         break;
 		  }      
 	  }
 
     // Boat
-    float boatJump = fade(23.,.1,10.,0.,0.);
+    float boatJump = fade(25.,.1,10.,0.,0.);
 	  if (j > 3+int(boatJump)) {
-      float boatX = fade(13., 9., -2., 1.4, 0.)+fade(22.1,8.,0.,-1.3,1.);
-      vec4 boat = boat(pos, vec2(boatX, -0.32+sin(t*4.)*0.03+boatJump*0.045), 0., fade(28.,2.,1.,0.,1.)*1.-(boatJump/30.));
+      float boatX = fade(14., 11., -1.5, 1.4, 1.)+fade(25.1,7.,0.,-1.3,1.);
+      vec4 boat = boat(pos, vec2(boatX, -0.31+sin(t*4.)*0.024+boatJump*0.044), 0., fade(29.3,1.7,1.,0.,1.)*1.-(boatJump/19.));
 		  if (boat.a < 0.0) {
 			  c = boat.rgb;
         break;
