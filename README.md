@@ -1,5 +1,5 @@
 # Uncharted Seas
-4k Demo for Instanssi 2020 demo party.
+4k Demo for Instanssi 2020 demo party, "pikkiriikkinen demo". Second place.
 
 by GeoScapers
 
